@@ -1,20 +1,28 @@
 {
   "name": "wavefront-nodejs-metrics-sdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "Wavefront Metrics SDK",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint '**/*.js'",
+    "lint:fix": "prettier-eslint '**/*.js' --write"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wavefrontHQ/wavefront-nodejs-metrics-sdk.git"
   },
-  "keywords": ["wavefront", "metrics", "javascript"],
+  "keywords": [],
   "author": "yzheqing@vmware.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/wavefrontHQ/wavefront-nodejs-metrics-sdk/issues"
   },
-  "homepage": "https://github.com/wavefrontHQ/wavefront-nodejs-metrics-sdk#readme"
+  "homepage": "https://github.com/wavefrontHQ/wavefront-nodejs-metrics-sdk#readme",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
 }
