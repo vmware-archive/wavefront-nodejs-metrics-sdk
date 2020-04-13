@@ -1,15 +1,16 @@
-const metrics = require('metrics'),
-  Report = metrics.Report,
-  Util = require('./util');
+import metrics from 'metrics';
+import utils from './util';
 
-class TaggedRegistry extends Report {
+const Report = metrics.Report;
+
+export default class TaggedRegistry extends Report {
   constructor() {
     super();
   }
 
   // return metric if key exist, otherwise create a new one
   _getOrAddMetric(metricName, tags, construct, supplier = null) {
-    let encodedName = Util.encodeKey(metricName, tags);
+    let encodedName = utils.encodeKey(metricName, tags);
     let metric = this.getMetric(encodedName);
     if (metric) return metric;
 
@@ -39,9 +40,7 @@ class TaggedRegistry extends Report {
   }
 
   hasHistogram(key, tags = null) {
-    let encodedName = Util.encodeKey(key, tags);
+    let encodedName = utils.encodeKey(key, tags);
     return this.getMetrics().histograms.indexOf(encodedName) >= 0;
   }
 }
-
-module.exports = TaggedRegistry;

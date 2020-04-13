@@ -1,9 +1,9 @@
-const metrics = require('metrics');
-const histogramImpl = require('../../wavefront-sdk-javascript/src/index')
-  .histogramImpl;
-const Distribution = require('../../wavefront-sdk-javascript/src/index')
-  .histogramImpl.Distribution;
-const TaggedRegistry = require('./registry');
+import metrics from 'metrics';
+import {
+  WavefrontHistogramImpl,
+  Distribution
+} from '../../wavefront-sdk-javascript/src/index';
+import TaggedRegistry from './registry';
 
 /**
  *
@@ -38,12 +38,12 @@ function get(name, registry) {
 class WavefrontHistogram extends metrics.Histogram {
   constructor(clockMillis = null) {
     super();
-    this._delegate = new histogramImpl.WavefrontHistogramImpl(clockMillis);
+    this._delegate = new WavefrontHistogramImpl(clockMillis);
     this.update = value => this._delegate.update(value);
   }
 
   clear() {
-    this._delegate = histogramImpl.WavefrontHistogramImpl();
+    this._delegate = WavefrontHistogramImpl();
   }
 
   getCount() {
@@ -87,8 +87,4 @@ class WavefrontHistogram extends metrics.Histogram {
   }
 }
 
-module.exports = {
-  wavefrontHistogram,
-  get,
-  WavefrontHistogram
-};
+export { wavefrontHistogram, get, WavefrontHistogram };

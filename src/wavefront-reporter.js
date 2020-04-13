@@ -1,8 +1,9 @@
-const metrics = require('metrics');
+import metrics from 'metrics';
+import * as wavefrontSDK from '../../wavefront-sdk-javascript/src/index';
+import utils from './util';
+import { WavefrontHistogram } from './wavefrontHistogram';
+
 const ScheduledReporter = metrics.ScheduledReporter;
-const wavefrontSDK = require('../../wavefront-sdk-javascript/src/index');
-const Util = require('./util');
-const wavefrontHistogram = require('./wavefrontHistogram');
 
 const metricsFunctionMap = {
   counter: [counter => ['', counter.count]],
@@ -36,7 +37,7 @@ const metricsFunctionMap = {
   ]
 };
 
-class WavefrontReporter extends ScheduledReporter {
+export default class WavefrontReporter extends ScheduledReporter {
   constructor({
     server,
     token,
@@ -50,8 +51,8 @@ class WavefrontReporter extends ScheduledReporter {
     this.server = server;
     this.source = source;
     this.batchSize = 10000;
-    this.wavefrontClient = new wavefrontSDK.wavefrontClient({
-      server: Util.validateUrl(server),
+    this.wavefrontClient = new wavefrontSDK.WavefrontDirectClient({
+      server: utils.validateUrl(server),
       token: token,
       batchSize: this.batchSize,
       flushIntervalSeconds: reportingInterval
@@ -60,7 +61,7 @@ class WavefrontReporter extends ScheduledReporter {
     this.enableRuntimeMetrics = enableRuntimeMetrics;
 
     this.flushCurrentHist = true;
-    this.tags = !Util.isEmpty(tags) ? tags : {};
+    this.tags = !utils.isEmpty(tags) ? tags : {};
   }
 
   /**
@@ -81,7 +82,7 @@ class WavefrontReporter extends ScheduledReporter {
         for (let m of metrics) {
           let [metricName, tags] = this._decodeMetric(m);
           // If Wavefront histogram, client send_distribution
-          if (m instanceof wavefrontHistogram.WavefrontHistogram) {
+          if (m instanceof WavefrontHistogram) {
             let distributions = m.getDistribution();
             if (this.flushCurrentHist) {
               distributions.push(m.getCurrentMinuteDistribution());
@@ -116,7 +117,7 @@ class WavefrontReporter extends ScheduledReporter {
   }
 
   _decodeMetric(metric) {
-    const [metricName, metricTagsArray] = Util.decodeKey(metric.name);
+    const [metricName, metricTagsArray] = utils.decodeKey(metric.name);
     const tagsArray = JSON.parse(metricTagsArray);
     let metricTags = {};
     if (tagsArray && tagsArray.length) {
@@ -149,5 +150,3 @@ class WavefrontReporter extends ScheduledReporter {
     return this;
   }
 }
-
-module.exports = WavefrontReporter;
