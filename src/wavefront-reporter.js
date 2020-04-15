@@ -1,8 +1,7 @@
-import metrics from 'metrics';
 import * as wavefrontSDK from '../../wavefront-sdk-javascript/src/index';
 import utils from './util';
 import { WavefrontHistogram } from './wavefrontHistogram';
-
+const metrics = require('metrics');
 const ScheduledReporter = metrics.ScheduledReporter;
 
 const metricsFunctionMap = {

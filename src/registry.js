@@ -1,6 +1,5 @@
-import metrics from 'metrics';
 import utils from './util';
-
+const metrics = require('metrics');
 const Report = metrics.Report;
 
 export default class TaggedRegistry extends Report {
