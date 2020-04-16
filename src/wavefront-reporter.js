@@ -1,9 +1,10 @@
 import utils from './util';
 import { WavefrontHistogram } from './wavefrontHistogram';
-import * as wavefrontSDK from 'wavefront-sdk-javascript';
 const metrics = require('metrics');
 const ScheduledReporter = metrics.ScheduledReporter;
+const wavefrontSDK = require('wavefront-sdk-javascript');
 
+// Transformation map for each metric type
 const metricsFunctionMap = {
   counter: [counter => ['', counter.count]],
   gauge: [gauge => ['', gauge.value()]],
@@ -36,6 +37,11 @@ const metricsFunctionMap = {
   ]
 };
 
+/**
+ * Reporter for sending metrics using direct ingestion.
+ * This reporter requires a server and a token to report data
+ * directly to a Wavefront server.
+ */
 export default class WavefrontReporter extends ScheduledReporter {
   constructor({
     server,
@@ -57,8 +63,6 @@ export default class WavefrontReporter extends ScheduledReporter {
       flushIntervalSeconds: reportingInterval
     });
     this.histogramGranularity = new Set();
-    this.enableRuntimeMetrics = enableRuntimeMetrics;
-
     this.flushCurrentHist = true;
     this.tags = !utils.isEmpty(tags) ? tags : {};
   }
@@ -115,6 +119,11 @@ export default class WavefrontReporter extends ScheduledReporter {
     }
   }
 
+  /**
+   * Decode name and tags of encoded metric.
+   * @param metric
+   * @returns {[string, any]}
+   */
   _decodeMetric(metric) {
     const [metricName, metricTagsArray] = utils.decodeKey(metric.name);
     const tagsArray = JSON.parse(metricTagsArray);
@@ -134,16 +143,28 @@ export default class WavefrontReporter extends ScheduledReporter {
     this.wavefrontClient.close();
   }
 
+  /**
+   * Report distribution using minute granularity.
+   * @returns {WavefrontReporter}
+   */
   reportMinuteDistribution() {
     this.histogramGranularity.add(wavefrontSDK.histogramGranularity.MINUTE);
     return this;
   }
 
+  /**
+   * Report distribution using hour granularity.
+   * @returns {WavefrontReporter}
+   */
   reportHourDistribution() {
     this.histogramGranularity.add(wavefrontSDK.histogramGranularity.HOUR);
     return this;
   }
 
+  /**
+   * Report distribution with day granularity.
+   * @returns {WavefrontReporter}
+   */
   reportDayDistribution() {
     this.histogramGranularity.add(wavefrontSDK.histogramGranularity.DAY);
     return this;

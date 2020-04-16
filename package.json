@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
+    "start": "node -r @babel/preset-env -r @babel/register -r regenerator-runtime example.js",
     "lint": "eslint '**/*.js'",
     "lint:fix": "prettier-eslint '**/*.js' --write",
     "test": "mocha"
@@ -42,6 +43,7 @@
     "rollup-plugin-uglify": "^6.0.4"
   },
   "dependencies": {
-    "metrics": "latest"
+    "metrics": "latest",
+    "wavefront-sdk-javascript": "latest"
   }
 }

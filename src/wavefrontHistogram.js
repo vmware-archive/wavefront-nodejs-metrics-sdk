@@ -1,46 +1,47 @@
-import { WavefrontHistogramImpl, Distribution } from 'wavefront-sdk-javascript';
 import TaggedRegistry from './registry';
+import utils from './util';
 const metrics = require('metrics');
+const wavefrontSDK = require('wavefront-sdk-javascript');
 
 /**
- *
+ * Register a Wavefront histogram with the given registry and returns the instance.
  * @param {TaggedRegistry} registry
  * @param name
  * @param tags
  * @return {WavefrontHistogram}
  */
 function wavefrontHistogram(registry, name, tags = null) {
-  // TODO: not tagged registry
   if (!name) {
     throw 'invalid counter name';
   }
+
   let histogram = new WavefrontHistogram();
+  if (registry instanceof TaggedRegistry) {
+    name = utils.encodeKey(name, tags);
+  }
   registry.addMetric(name, histogram);
   return histogram;
 }
 
 /**
- * Get Wavefront Histogram with the given name is in registry.
- * Return null if the given name doesn't exist
+ * Wavefront Histogram Meter.
  */
-function get(name, registry) {
-  // TODO: delete function
-  // TODO: not tagged registry
-  if (registry.hasHistogram(name)) {
-    return registry.histogram(name);
-  }
-  return null;
-}
-
 class WavefrontHistogram extends metrics.Histogram {
+  /**
+   * Construct a delegate Wavefront Histogram.
+   * @param clockMillis -  A function which returns timestamp.
+   */
   constructor(clockMillis = null) {
     super();
-    this._delegate = new WavefrontHistogramImpl(clockMillis);
+    this._delegate = new wavefrontSDK.WavefrontHistogramImpl(clockMillis);
     this.update = value => this._delegate.update(value);
   }
 
+  /**
+   * Instantiate brand new WavefrontHistogramImpl().
+   */
   clear() {
-    this._delegate = WavefrontHistogramImpl();
+    this._delegate = wavefrontSDK.WavefrontHistogramImpl();
   }
 
   getCount() {
@@ -67,21 +68,21 @@ class WavefrontHistogram extends metrics.Histogram {
     return this._delegate.stdDev();
   }
 
-  // TODO
-  getVar() {}
-  getSnapshot() {}
-
   /**
-   *
-   * @returns {Distribution[]}
+   * Get Distribution w/o current minute bin.
+   * @returns {wavefrontSDK.Distribution[]}
    */
   getDistribution() {
     return this._delegate.flushDistributions();
   }
 
+  /**
+   * Get Distribution for the current minute bin.
+   * @returns {*}
+   */
   getCurrentMinuteDistribution() {
     return this._delegate.getCurrentBin().toDistribution();
   }
 }
 
-export { wavefrontHistogram, get, WavefrontHistogram };
+export { wavefrontHistogram, WavefrontHistogram };
