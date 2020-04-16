@@ -1,6 +1,6 @@
-const TaggedRegistry = require('./src/registry'),
-  WavefrontReporter = require('./src/wavefront-reporter'),
-  wavefrontHistogram = require('./src/wavefrontHistogram');
+import TaggedRegistry from './src/registry';
+import WavefrontReporter from './src/wavefront-reporter';
+import { wavefrontHistogram } from './src/wavefrontHistogram';
 
 // Metrics Reporting Function Example.
 function reportMetrics(server, token) {
@@ -29,7 +29,7 @@ function reportMetrics(server, token) {
   h.update(50);
 
   // wavefront histogram
-  let wf_h = wavefrontHistogram.wavefrontHistogram(reg, 'request.duration.wf', {
+  let wf_h = wavefrontHistogram(reg, 'request.duration.wf', {
     key1: 'val1'
   });
   wf_h.update(1.0);
@@ -47,4 +47,7 @@ function reportMetrics(server, token) {
   wfReporter.stop();
 }
 
-reportMetrics('test_server', 'test_token');
+if (process.argv.length !== 4) {
+  throw new Error(`Usage: node example.js <server> <token>`);
+}
+reportMetrics(process.argv[2], process.argv[3]);

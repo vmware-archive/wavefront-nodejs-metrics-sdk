@@ -1,7 +1,4 @@
-import {
-  WavefrontHistogramImpl,
-  Distribution
-} from '../../wavefront-sdk-javascript/src/index';
+import { WavefrontHistogramImpl, Distribution } from 'wavefront-sdk-javascript';
 import TaggedRegistry from './registry';
 const metrics = require('metrics');
 

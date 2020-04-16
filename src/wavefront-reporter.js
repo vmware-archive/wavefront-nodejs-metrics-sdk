@@ -1,6 +1,6 @@
-import * as wavefrontSDK from '../../wavefront-sdk-javascript/src/index';
 import utils from './util';
 import { WavefrontHistogram } from './wavefrontHistogram';
+import * as wavefrontSDK from 'wavefront-sdk-javascript';
 const metrics = require('metrics');
 const ScheduledReporter = metrics.ScheduledReporter;
 
@@ -51,7 +51,7 @@ export default class WavefrontReporter extends ScheduledReporter {
     this.source = source;
     this.batchSize = 10000;
     this.wavefrontClient = new wavefrontSDK.WavefrontDirectClient({
-      server: utils.validateUrl(server),
+      server: server,
       token: token,
       batchSize: this.batchSize,
       flushIntervalSeconds: reportingInterval

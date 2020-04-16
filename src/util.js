@@ -1,13 +1,5 @@
 const tagSeparator = '-tags=';
 
-/**
- * Validate URL of server.
- * @param server
- */
-function validateUrl(server) {
-  // TODO
-}
-
 function isEmpty(value) {
   return (
     (typeof value == 'string' && !value.trim()) ||
@@ -42,7 +34,6 @@ function decodeKey(key) {
 }
 
 export default {
-  validateUrl,
   isEmpty,
   encodeKey,
   decodeKey
