@@ -1,5 +1,5 @@
 # wavefront-metrics-sdk
-This is a plugin for metrics which adds Wavefront reporters via direct ingestion) and an abstraction that supports tagging at the host level. 
+This is a plugin for metrics which adds Wavefront reporters via direct ingestion and an abstraction that supports tagging at the host level. 
 
 ### Setup
 $ npm install

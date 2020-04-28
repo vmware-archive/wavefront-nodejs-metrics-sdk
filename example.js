@@ -1,6 +1,8 @@
-import TaggedRegistry from './src/registry';
-import WavefrontReporter from './src/wavefront-reporter';
-import { wavefrontHistogram } from './src/wavefrontHistogram';
+import {
+  TaggedRegistry,
+  WavefrontReporter,
+  registerHistogram
+} from './src/index';
 
 // Metrics Reporting Function Example.
 function reportMetrics(server, token) {
@@ -26,14 +28,15 @@ function reportMetrics(server, token) {
 
   // histogram
   let h = reg.histogram('request.duration.foo', { key1: 'val1' });
-  h.update(50);
+  h.update(1.0);
+  h.update(1.5);
 
   // wavefront histogram
-  let wf_h = wavefrontHistogram(reg, 'request.duration.wf', {
+  let wf_h = registerHistogram(reg, 'request.duration.wf', {
     key1: 'val1'
   });
   wf_h.update(1.0);
-  wf_h.update(1.0);
+  wf_h.update(2.0);
 
   // meter
   let m = reg.meter('request.meter', { key1: 'val1' });

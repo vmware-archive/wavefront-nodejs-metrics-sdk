@@ -6,10 +6,6 @@ const Report = metrics.Report;
  * Tagged Metrics Registry.
  */
 export default class TaggedRegistry extends Report {
-  constructor() {
-    super();
-  }
-
   /**
    * Return metric if key exist, otherwise create a new one
    * @param metricName
@@ -19,11 +15,11 @@ export default class TaggedRegistry extends Report {
    * @returns {any | metrics.Meter | metrics.Timer | metrics.Counter | metrics.Histogram | metrics.Gauge|metrics.Metric}
    */
   _getOrAddMetric(metricName, tags, construct, supplier = null) {
-    let encodedName = utils.encodeKey(metricName, tags);
+    const encodedName = utils.encodeKey(metricName, tags);
     let metric = this.getMetric(encodedName);
     if (metric) return metric;
 
-    metric = supplier ? new construct(supplier) : new construct();
+    metric = new construct(supplier);
     this.addMetric(encodedName, metric);
     return metric;
   }

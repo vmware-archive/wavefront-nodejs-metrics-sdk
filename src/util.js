@@ -12,13 +12,12 @@ function encodeKey(metricName, tags) {
   if (this.isEmpty(tags)) {
     return metricName;
   }
-  let tagsType = Object.prototype.toString.call(tags).slice(8, -1);
-  if (tagsType === 'Object') {
+  if (typeof tags === 'object') {
     // Sort the tags based on their keys to avoid duplicate metrics
     let tagsArray = Object.keys(tags)
       .sort()
       .map(key => [key, tags[key]]);
-    return metricName + tagSeparator + JSON.stringify(tagsArray);
+    return `${metricName}${tagSeparator}${JSON.stringify(tagsArray)}`;
   }
   throw new Error(
     'Wrong Tags datatype sent to the API. Expected: Object. Actual: ' + tagsType

@@ -105,7 +105,6 @@ export default class WavefrontReporter extends ScheduledReporter {
           // If metric, client send_metric
           for (let f of metricsFunctionMap[m.type]) {
             const [suffix, value] = f(m);
-            console.log(metricName + suffix + ': ' + value);
             this.wavefrontClient.sendMetric(
               metricName + suffix,
               value,
@@ -127,7 +126,7 @@ export default class WavefrontReporter extends ScheduledReporter {
   _decodeMetric(metric) {
     const [metricName, metricTagsArray] = utils.decodeKey(metric.name);
     const tagsArray = JSON.parse(metricTagsArray);
-    let metricTags = {};
+    const metricTags = {};
     if (tagsArray && tagsArray.length) {
       tagsArray.forEach(([key, value]) => (metricTags[key] = value));
     }

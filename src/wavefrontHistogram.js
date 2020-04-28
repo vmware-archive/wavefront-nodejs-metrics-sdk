@@ -10,12 +10,12 @@ const wavefrontSDK = require('wavefront-sdk-javascript');
  * @param tags
  * @return {WavefrontHistogram}
  */
-function wavefrontHistogram(registry, name, tags = null) {
-  if (!name) {
+function registerHistogram(registry, name, tags = null) {
+  if (!name || !name.trim()) {
     throw 'invalid counter name';
   }
 
-  let histogram = new WavefrontHistogram();
+  const histogram = new WavefrontHistogram();
   if (registry instanceof TaggedRegistry) {
     name = utils.encodeKey(name, tags);
   }
@@ -34,14 +34,17 @@ class WavefrontHistogram extends metrics.Histogram {
   constructor(clockMillis = null) {
     super();
     this._delegate = new wavefrontSDK.WavefrontHistogramImpl(clockMillis);
-    this.update = value => this._delegate.update(value);
+  }
+
+  update(value, timestamp = null) {
+    this._delegate.update(value);
   }
 
   /**
    * Instantiate brand new WavefrontHistogramImpl().
    */
   clear() {
-    this._delegate = wavefrontSDK.WavefrontHistogramImpl();
+    this._delegate = new wavefrontSDK.WavefrontHistogramImpl();
   }
 
   getCount() {
@@ -85,4 +88,4 @@ class WavefrontHistogram extends metrics.Histogram {
   }
 }
 
-export { wavefrontHistogram, WavefrontHistogram };
+export { registerHistogram, WavefrontHistogram };
